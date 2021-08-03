@@ -8,6 +8,7 @@ class Bar:
         self.distances=distances
         self.widths=widths
         self.setting = setting
+        self.counter=0
 def leftPress(rect1,rect2):
     print("Left")
     c.coords(rect2, padding, 0, padding + bar.widths[0], height)
@@ -15,6 +16,7 @@ def leftPress(rect1,rect2):
              height)
 
 def rightPress(rect1,rect2):
+    ##IF CORRECT BAR: increment counter, and swap, count time.
     print("Right")
     c.coords(rect1, padding, 0, padding + bar.widths[0], height)
     c.coords(rect2, padding + bar.widths[0] + bar.distances[0], 0, padding + 2 * bar.widths[0] + bar.distances[0],
