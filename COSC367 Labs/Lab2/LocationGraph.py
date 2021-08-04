@@ -1,5 +1,8 @@
+import heapq
+
 from search import *
 from math import dist
+import collections
 class LocationGraph():
     def __init__(self, nodes, locations, edges, starting_nodes, goal_nodes, estimates=None):
 
@@ -47,22 +50,61 @@ class LocationGraph():
         return arcs
 
 
+class LCFSFrontier(Frontier):
+
+    def __init__(self):
+        """The constructor takes no argument. It initialises the
+        container to an empty stack."""
+        self.container = []
+
+    def add(self, path):
+        heapq.heappush(self.container, path)
+
+    def __iter__(self):
+        """We don't need a separate iterator object. Just return self. You
+        don't need to change this method."""
+        return self
+
+    def __next__(self):
+
+        if len(self.container) > 0:
+            return heapq.heappop(self.container)
+        else:
+            raise StopIteration  # don't change this one
 
 
 graph = LocationGraph(nodes=set('ABC'),
                       locations={'A': (0, 0),
                                  'B': (3, 0),
                                  'C': (3, 4)},
-                      edges={('A', 'B'), ('B', 'C'),
+                      edges={('A', 'B'), ('B','C'),
                              ('B', 'A'), ('C', 'A')},
                       starting_nodes=['A'],
                       goal_nodes={'C'})
 
-for arc in graph.outgoing_arcs('A'):
-    print(arc)
+solution = next(generic_search(graph, LCFSFrontier()))
+print_actions(solution)
 
-for arc in graph.outgoing_arcs('B'):
-    print(arc)
+graph = LocationGraph(nodes=set('ABC'),
+                      locations={'A': (0, 0),
+                                 'B': (3, 0),
+                                 'C': (3, 4)},
+                      edges={('A', 'B'), ('B','C'),
+                             ('B', 'A')},
+                      starting_nodes=['A'],
+                      goal_nodes={'C'})
 
-for arc in graph.outgoing_arcs('C'):
-    print(arc)
+solution = next(generic_search(graph, LCFSFrontier()))
+print_actions(solution)
+
+pythagorean_graph = LocationGraph(
+    nodes=set("abc"),
+    locations={'a': (5, 6),
+               'b': (10,6),
+               'c': (10,18)},
+    edges={tuple(s) for s in {'ab', 'ac', 'bc'}},
+    starting_nodes=['a'],
+    goal_nodes={'c'})
+
+solution = next(generic_search(pythagorean_graph, LCFSFrontier()))
+print_actions(solution)
