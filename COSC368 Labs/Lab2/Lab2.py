@@ -126,7 +126,7 @@ while (len(inputChars) != 6):
 block = Block(inputChars, style)
 block.printBlocks()
 # Delete entries from previous runs
-with open('log.csv', 'w', newline='') as csvfile:
+with open('../Lab3/log.csv', 'w', newline='') as csvfile:
     spamwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
     spamwriter.writerow([' '])
 csvfile.close()
