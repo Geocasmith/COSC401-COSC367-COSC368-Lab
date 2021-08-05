@@ -58,7 +58,10 @@ class LCFSFrontier(Frontier):
         self.container = []
 
     def add(self, path):
-        heapq.heappush(self.container, path)
+        cost=0
+        for arc in path:
+            cost+=arc[3]
+        heapq.heappush(self.container, (cost,path))
 
     def __iter__(self):
         """We don't need a separate iterator object. Just return self. You
@@ -68,7 +71,7 @@ class LCFSFrontier(Frontier):
     def __next__(self):
 
         if len(self.container) > 0:
-            return heapq.heappop(self.container)
+            return heapq.heappop(self.container)[1]
         else:
             raise StopIteration  # don't change this one
 
