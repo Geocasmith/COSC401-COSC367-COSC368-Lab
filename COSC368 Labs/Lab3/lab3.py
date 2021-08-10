@@ -56,7 +56,7 @@ def leftPress(rect1,rect2):
 
 
         # Prints to log file
-        with open('lab_3_log.txt', 'a', newline='') as csvfile:
+        with open('lab_3_log.csv', 'a', newline='') as csvfile:
             spamwriter = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
             spamwriter.writerow(
                 ['George', bar.distances[bar.runCounter], bar.widths[bar.runCounter], bar.returnSetting(), bar.getTime()])
