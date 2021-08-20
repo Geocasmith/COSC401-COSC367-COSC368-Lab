@@ -1,0 +1,1 @@
+http://www.newthinktank.com/2015/08/learn-prolog-one-video/
