@@ -19,7 +19,7 @@ def generic_search(graph, frontier):
 
     """
 
-    for starting_node in graph.starting_nodes():
+    for starting_node in graph.start():
         # Paths are tuples and the first arc on each path is a dummy
         # arc to a starting node
         frontier.add((Arc(None, starting_node, "no action", 0),))
