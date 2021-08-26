@@ -1,9 +1,5 @@
 import math
-
 from search import *
-import collections
-from itertools import dropwhile
-
 
 class RoutingGraph(Graph):
     """A graph where nodes are numbers. A number n leads to n-1 and
@@ -17,7 +13,7 @@ class RoutingGraph(Graph):
         self.fuel = []
 
         # Split string into individual chars, returns list of lists
-        split = map_str.split('\n')
+        split = map.split('\n')
         for i in range(len(split)):
             split[i] = list(split[i])
 
@@ -34,10 +30,10 @@ class RoutingGraph(Graph):
                     self.start.append((row, col, math.inf))
                 elif node.isdigit():
                     self.start.append((row, col, int(node)))
-        # print(self.starting_nodes)
+        #print(self.starting_nodes)
         # print(self.goal_nodes)
         # print(self.obstacles)
-        # print(self.fuel)
+        #print(self.fuel)
 
     def outgoing_arcs(self, tail_node):
         """Takes a node (which is an integer in this problem) and returns
@@ -48,30 +44,34 @@ class RoutingGraph(Graph):
                      ('S', 1, 0),
                      ('W', 0, -1), ]
 
+
         for move in available:
             action = move[0]
-            print(tail_node)
-            newRow = tail_node[0][0] + move[1]
-            newCol = tail_node[0][1] + move[2]
+
+            newRow = tail_node[0] + move[1]
+            newCol = tail_node[1] + move[2]
             target_node = (newRow, newCol)
+            fuel=tail_node[2]
 
             if not (target_node in self.obstacles):
-                if target_node in self.fuel and tail_node[2] < 9:
-                    outgoing.append(Arc(tail_node, tail_node, "Fuel up", 15))
 
-                else:
-                    outgoing.append(Arc[tail_node, (newRow, newCol, tail_node[2] - 5), action, 5])
+
+                if fuel!=0:
+                    outgoing.append(Arc(tail_node, (newRow, newCol, (fuel - 1)), action, 5))
+        tailx, taily, fuel = tail_node
+        if (tailx,taily) in self.fuel and fuel < 9:
+            outgoing.append(Arc(tail_node, (tailx, taily, 9), "Fuel up", 15))
 
         return outgoing
 
     def starting_nodes(self):
         """Returns a sequence (list) of starting nodes. In this problem
         the seqence always has one element."""
-        return [self.start]
+        return self.start
 
     def is_goal(self, node):
         """Determine whether a given node (integer) is a goal."""
-        return node in self.goal
+        return (node[0], node[1]) in self.goal
 
 
 map_str = """\
