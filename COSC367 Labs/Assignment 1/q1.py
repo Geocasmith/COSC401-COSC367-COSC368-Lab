@@ -72,51 +72,60 @@ class RoutingGraph(Graph):
     def is_goal(self, node):
         """Determine whether a given node (integer) is a goal."""
         return (node[0], node[1]) in self.goal
+    def estimated_cost_to_goal(self, node):
+        costs = []
+        for goal in self.goal:
+            goalx , goaly , fueld = goal
+            nodex, nodey = node
+
+            distancex = abs(goalx-nodex)
+            distancey = abs(goaly-nodey)
+            distance = (distancex,distancey)
+            print("DISTANCE")
+            print(distance)
+            #costs.append((di))
+
+class AStarFrontier(Frontier):
+    """This is an abstract class for frontier classes. It outlines the
+    methods that must be implemented by a concrete subclass. Concrete
+    subclasses determine the search strategy.
+
+    """
+    def __init__(self, graph):
+        self.graph = graph
+        self.visited = []
+
+    def add(self, path):
+        """Adds a new path to the frontier. A path is a sequence (tuple) of
+        Arc objects. You should override this method.
+
+        """
+
+    def __iter__(self):
+        """We don't need a separate iterator object. Just return self. You
+        don't need to change this method."""
+        return self
+
+
+    def __next__(self):
+        """Selects, removes, and returns a path on the frontier if there is
+        any.Recall that a path is a sequence (tuple) of Arc
+        objects. Override this method to achieve a desired search
+        strategy. If there nothing to return this should raise a
+        StopIteration exception.
+
+        """
 
 
 map_str = """\
 +-------+
-|  9  XG|
-|X XXX  |
-| S  0FG|
+|   G   |
+|       |
+|   S   |
 +-------+
 """
 
-graph = RoutingGraph(map_str)
-
-print("Starting nodes:", sorted(graph.starting_nodes()))
-print("Outgoing arcs (available actions) at starting states:")
-for s in sorted(graph.starting_nodes()):
-    print(s)
-    for arc in graph.outgoing_arcs(s):
-        print ("  " + str(arc))
-
-node = (1,1,5)
-print("\nIs {} goal?".format(node), graph.is_goal(node))
-print("Outgoing arcs (available actions) at {}:".format(node))
-for arc in graph.outgoing_arcs(node):
-    print ("  " + str(arc))
-
-node = (1,7,2)
-print("\nIs {} goal?".format(node), graph.is_goal(node))
-print("Outgoing arcs (available actions) at {}:".format(node))
-for arc in graph.outgoing_arcs(node):
-    print ("  " + str(arc))
-
-node = (3, 7, 0)
-print("\nIs {} goal?".format(node), graph.is_goal(node))
-
-node = (3, 7, math.inf)
-print("\nIs {} goal?".format(node), graph.is_goal(node))
-
-node = (3,6,5)
-print("\nIs {} goal?".format(node), graph.is_goal(node))
-print("Outgoing arcs (available actions) at {}:".format(node))
-for arc in graph.outgoing_arcs(node):
-    print ("  " + str(arc))
-
-node = (3,6,9)
-print("\nIs {} goal?".format(node), graph.is_goal(node))
-print("Outgoing arcs (available actions) at {}:".format(node))
-for arc in graph.outgoing_arcs(node):
-    print ("  " + str(arc))
+map_graph = RoutingGraph(map_str)
+frontier = AStarFrontier(map_graph)
+solution = next(generic_search(map_graph, frontier), None)
+print_actions(solution)
