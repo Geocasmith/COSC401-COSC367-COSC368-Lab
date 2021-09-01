@@ -11,7 +11,6 @@ Last modified: 13 Jul 2019
 from abc import ABCMeta, abstractmethod
 from collections import namedtuple
 
-
 def generic_search(graph, frontier):
     """Implements a generic graph search algorithm (see the lecture
     notes). The actual search behaviour depends on the type of the
@@ -19,19 +18,19 @@ def generic_search(graph, frontier):
 
     """
 
-    for starting_node in graph.start():
+    for starting_node in graph.starting_nodes():
         # Paths are tuples and the first arc on each path is a dummy
         # arc to a starting node
         frontier.add((Arc(None, starting_node, "no action", 0),))
 
     for path in frontier:
-        node_to_expand = path[-1].head  # head of the last arc in the path
+        node_to_expand = path[-1].head # head of the last arc in the path
 
         if graph.is_goal(node_to_expand):
             yield path
 
         for arc in graph.outgoing_arcs(node_to_expand):
-            frontier.add(path + (arc,))  # add back a new extended path
+            frontier.add(path + (arc,)) # add back a new extended path
 
 
 class Arc(namedtuple('Arc', 'tail, head, action, cost')):
@@ -103,11 +102,11 @@ class ExplicitGraph(Graph):
         # A few assertions to detect possible errors in
         # instantiation. These assertions are not essential to the
         # class functionality.
-        assert all(tail in nodes and head in nodes for tail, head, *_ in edge_list) \
-            , "An edge must link two existing nodes!"
-        assert all(node in nodes for node in starting_nodes), \
+        assert all(tail in nodes and head in nodes for tail, head, *_ in edge_list)\
+           , "An edge must link two existing nodes!"
+        assert all(node in nodes for node in starting_nodes),\
             "The starting_states must be in nodes."
-        assert all(node in nodes for node in goal_nodes), \
+        assert all(node in nodes for node in goal_nodes),\
             "The goal states must be in nodes."
 
         self.nodes = nodes
@@ -133,7 +132,7 @@ class ExplicitGraph(Graph):
         for edge in self.edge_list:
             if len(edge) == 2:  # if no cost is specified
                 tail, head = edge
-                cost = 1  # assume unit cost
+                cost = 1        # assume unit cost
             else:
                 tail, head, cost = edge
             if tail == node:
@@ -141,12 +140,14 @@ class ExplicitGraph(Graph):
         return arcs
 
 
-class Frontier(metaclass=ABCMeta):
+
+class Frontier(metaclass = ABCMeta):
     """This is an abstract class for frontier classes. It outlines the
     methods that must be implemented by a concrete subclass. Concrete
     subclasses determine the search strategy.
 
     """
+
 
     @abstractmethod
     def add(self, path):
@@ -155,13 +156,16 @@ class Frontier(metaclass=ABCMeta):
 
         """
 
+
     def __iter__(self):
         """We don't need a separate iterator object. Just return self. You
         don't need to change this method."""
         return self
 
+
     @abstractmethod
     def __next__(self):
+
         """Selects, removes, and returns a path on the frontier if there is
         any.Recall that a path is a sequence (tuple) of Arc
         objects. Override this method to achieve a desired search
@@ -169,6 +173,7 @@ class Frontier(metaclass=ABCMeta):
         StopIteration exception.
 
         """
+
 
 
 def print_actions(path):

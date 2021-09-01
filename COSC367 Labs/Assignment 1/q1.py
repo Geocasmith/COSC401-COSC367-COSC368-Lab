@@ -1,4 +1,5 @@
 import heapq
+import time
 import math
 from search import *
 
@@ -8,7 +9,7 @@ class RoutingGraph(Graph):
 
     def __init__(self, map):
         self.map = map
-        self.start = []
+        self.startNodes = []
         self.goal = []
         self.obstacles = []
         self.fuel = []
@@ -28,9 +29,9 @@ class RoutingGraph(Graph):
                 elif node == 'G':
                     self.goal.append((row, col))
                 elif node == 'S':
-                    self.start.append((row, col, math.inf))
+                    self.startNodes.append((row, col, math.inf))
                 elif node.isdigit():
-                    self.start.append((row, col, int(node)))
+                    self.startNodes.append((row, col, int(node)))
         #print(self.starting_nodes)
         # print(self.goal_nodes)
         # print(self.obstacles)
@@ -68,7 +69,7 @@ class RoutingGraph(Graph):
     def starting_nodes(self):
         """Returns a sequence (list) of starting nodes. In this problem
         the seqence always has one element."""
-        return self.start
+        return self.startNodes
 
     def is_goal(self, node):
         """Determine whether a given node (integer) is a goal."""
@@ -87,52 +88,48 @@ class RoutingGraph(Graph):
             #costs.append((di))
 
 class AStarFrontier(Frontier):
-    """This is an abstract class for frontier classes. It outlines the
-    methods that must be implemented by a concrete subclass. Concrete
-    subclasses determine the search strategy.
 
-    """
-    def __init__(self, graph):
-        self.graph = graph
-        self.visited = []
-
+    def __init__(self,graph):
+        """The constructor takes no argument. It initialises the
+        container to an empty stack."""
+        self.container = []
+        self.graph=graph
+        self.visited=[]
+        self.startTime =time.time()
     def add(self, path):
-        """Adds a new path to the frontier. A path is a sequence (tuple) of
-        Arc objects. You should override this method.
-
-        """
         cost = 0
         for arc in path:
             cost += arc[3]  # getting all the costs of previous path
         heapq.heappush(self.container, (cost, path))
+
+
     def __iter__(self):
         """We don't need a separate iterator object. Just return self. You
         don't need to change this method."""
         return self
 
-
     def __next__(self):
-        """Selects, removes, and returns a path on the frontier if there is
-        any.Recall that a path is a sequence (tuple) of Arc
-        objects. Override this method to achieve a desired search
-        strategy. If there nothing to return this should raise a
-        StopIteration exception.
+        endtime = time.time()
+        elapsed = endtime-self.startTime
+        if(elapsed>0.5):
+            raise StopIteration
 
-        """
         if len(self.container) > 0:
             return heapq.heappop(self.container)[1]
         else:
             raise StopIteration  # don't change this one
 
+
 map_str = """\
-+-------+
-|   G   |
-|       |
-|   S   |
-+-------+
++----------+
+|    X     |
+| S  X  G  |
+|    X     |
++----------+
 """
 
 map_graph = RoutingGraph(map_str)
 frontier = AStarFrontier(map_graph)
 solution = next(generic_search(map_graph, frontier), None)
+print(solution)
 print_actions(solution)
