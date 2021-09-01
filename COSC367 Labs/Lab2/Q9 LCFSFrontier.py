@@ -60,7 +60,7 @@ class LCFSFrontier(Frontier):
     def add(self, path):
         cost=0
         for arc in path:
-            cost+=arc[3]
+            cost+=arc[3] #getting all the costs of previous path
         heapq.heappush(self.container, (cost,path))
 
     def __iter__(self):

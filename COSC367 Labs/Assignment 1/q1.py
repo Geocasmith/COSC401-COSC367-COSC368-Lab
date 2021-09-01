@@ -1,3 +1,4 @@
+import heapq
 import math
 from search import *
 
@@ -100,7 +101,10 @@ class AStarFrontier(Frontier):
         Arc objects. You should override this method.
 
         """
-
+        cost = 0
+        for arc in path:
+            cost += arc[3]  # getting all the costs of previous path
+        heapq.heappush(self.container, (cost, path))
     def __iter__(self):
         """We don't need a separate iterator object. Just return self. You
         don't need to change this method."""
@@ -115,7 +119,10 @@ class AStarFrontier(Frontier):
         StopIteration exception.
 
         """
-
+        if len(self.container) > 0:
+            return heapq.heappop(self.container)[1]
+        else:
+            raise StopIteration  # don't change this one
 
 map_str = """\
 +-------+
