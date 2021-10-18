@@ -7,16 +7,14 @@ def depth(expression):
     elif isinstance(expression,list) and len(expression)==3:
 
             depth_number = 1#if its not a leaf then add 1 to the depth
-            for i in range(1, 3): #checks if arguements valid
-                arguement = expression[i]
-                if(depth_number<depth_number+depth(arguement)):
-                    depth_number=depth_number+depth(arguement)
+
+            arg_one_depth = depth_number + depth(expression[1]) #depth of first arguement
+            arg_two_depth = depth_number + depth(expression[2]) #depth of seccond arguement
+            deepest_depth = max(arg_one_depth,arg_two_depth) #return the deepest tree
+            return deepest_depth
+
+
     return depth_number
 
-expression = ['+',
-               ['*', 2, 'i'],
-               ['*',
-                 ['*', -3, ['*', -3, 'x']],
-                 'x']]
-
+expression = 12
 print(depth(expression))
