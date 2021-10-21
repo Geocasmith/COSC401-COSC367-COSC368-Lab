@@ -15,9 +15,9 @@ def random_expression(function_symbols, leaves, max_depth):
             arg_two = random_expression(function_symbols, leaves, max_depth-1)
             return [function,arg_one,arg_two]
 
-function_symbols = ['f', 'g', 'h']
-leaves = ['x', 'y', 'i'] + list(range(-2, 3))
-max_depth = 4
+function_symbols = ['*', '+', '-']
+leaves = [-2, -1, 0,1,2,'x','y','i']
+max_depth = 3
 
 expressions = [random_expression(function_symbols, leaves, max_depth)
                for _ in range(10000)]
