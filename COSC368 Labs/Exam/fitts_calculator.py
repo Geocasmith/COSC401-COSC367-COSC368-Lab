@@ -2,10 +2,10 @@ import math
 #Fitts Law
 
 #**************Set variables
-A = 900
-W = 100
-a = 300
-b = 200
+A = 350
+W = 50
+a = 100
+b = 100
 
 #calculate ID
 ID = math.log2(A/W +1)
