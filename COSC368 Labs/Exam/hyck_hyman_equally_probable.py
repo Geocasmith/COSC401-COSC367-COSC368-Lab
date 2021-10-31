@@ -10,3 +10,4 @@ n = 8
 T = a + b * math.log2(n)
 
 print(" HYMAN EQUALLY PROBABLE N ITEMS \n a: "+str(a)+" ms "+"\n b: "+str(b)+" ms/bit"+"\n N items: "+str(n)+"\n Decision Time: "+str(T)+" ms")
+print("T = "+str(a)+" + "+str(b)+" * log2("+str(n)+")")
