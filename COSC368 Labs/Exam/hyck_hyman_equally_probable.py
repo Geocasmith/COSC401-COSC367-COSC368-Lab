@@ -4,7 +4,7 @@ import math
 #**************Set variables
 a = 100
 b = 100
-n = 20
+n = 8
 
 #calculate ID
 T = a + b * math.log2(n)
