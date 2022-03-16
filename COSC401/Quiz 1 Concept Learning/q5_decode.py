@@ -55,7 +55,7 @@ def in_rectangle(x1,y1,x2,y2,x,y):
 h1 = decode((1, 4, 7, 9))
 h2 = decode((7, 9, 1, 4))
 h3 = decode((1, 9, 7, 4))
-h4 = decode((7, 4, 1, 9))
+h4 = decode((7, 4, 1, 9 ))
 
 
 for x in itertools.product(range(-2, 11), repeat=2):
