@@ -77,23 +77,17 @@ def get_classifications(data):
     return classifications
 
 class DTNode:
-    """
-    Decision node
-    """
+    def __init__(self, decision):
+        self.decision = decision
+        self.children = []
 
-    def __init__(self):
-        """
-        Initialise node.
-        """
-        # self.attribute = attribute
-        # self.classification = classification
-        self.edges = []
 
-    def add_edge(self, edge):
-        """
-        Adds child
-        """
-        self.edges.append(edge)
+    def predict(self, input_data):
+        if len(self.children) == 0:#leaf node (decision is not a function so just return it)
+            return self.decision #return the classifier/regression result if it is a leaf node
+        else:
+            childNum = self.decision(input_data) #calculates which child to go to based on decision function (is a function if its not a leaf node)
+            return self.children[childNum].predict(input_data) #recursively calls predict on the child node
 
 
 def most_common_class(examples):
@@ -114,8 +108,31 @@ def DTree(examples,features,criterion):
     elif len(features) == 0:
         return most_common_class(examples)
     else:
-        #create a new decision node R
-        R = DTNode()
+
+        lowest_missclassification=9999 #initialize to a high number
+        best_node=DTNode()  #initialize best node to empty node
+        # find the best feature to split on
+        for f in features:
+            # for each feature partition the data
+            separator_func, partitions = partition_by_feature_value(examples, f)
+
+            #calculates the maximum misclassification error for the partitions
+            missclassification = max(misclassification(partitions[i]) for i in range(len(partitions)))
+            #TODO REDO SO ITS NOT JUST MISSCLASSIFICATION (needs to find the lowest)
+            #if the current feature has the lowest misclassification error, set the best node to the current feature
+            if(missclassification<lowest_missclassification or lowest_missclassification==0):
+                lowest_missclassification=missclassification
+                best_node=DTNode(separator_func)
+                best_feature=f
+
+            for v_i in range(len(partitions)):
+                #recursively call the decision tree on the partitions
+                best_node.children.append(DTree(partitions[v_i],features[:],criterion))
+        return best_node
+
+
+
+
         #find the best attribute to split on
 
 
