@@ -1,13 +1,3 @@
-#Goes through all the features and gets all classificatoins
-# def get_classifications(data):
-#     classifications = []
-#     for d in data:
-#         input_vector=d[0]
-#
-#         for value in input_vector:
-#             if value not in classifications:
-#                 classifications.append(value)
-#     return classifications
 import math
 
 
