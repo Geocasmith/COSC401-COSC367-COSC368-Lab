@@ -1,9 +1,64 @@
-# def train_tree(dataset,criterion):
-#     """
-#     Trains a decision tree using the given dataset and criterion.
-#     """
-#
-#     return 0
+def train_tree(dataset, criterion):
+    """
+    Trains a decision tree using the given dataset and criterion.
+    """
+    features = list(range(0, len(dataset[0][0])))
+    return DTree(dataset, features, criterion)
+
+def DTree(examples,features,criterion):
+    """
+    COnstructs the decision tree
+    """
+    # base case all examples in one class. dataset[i][-1] is the class label
+    if all(examples[i][-1] == examples[0][-1] for i in range(len(examples))):
+        #return DTNode where decision is that class
+        return DTNode(examples[0][-1])
+
+    # base case set of features is empty
+    elif len(features) == 0:
+        return DTNode(most_common_class(examples))
+    else:
+
+
+        lowest_impurity = 9999
+        best_feature = features[0]# initialise lowest impurity to a high number
+        # find the best feature to split on
+        for f in features:
+            # for each feature partition the data
+            separator_func, partitions = partition_by_feature_value(examples, f)
+
+            #init impurity
+            impurity= 0
+            #for each partition calculate the impurity
+            for i in range(len(partitions)):
+                impurity += len(partitions[i])/len(examples) * criterion(partitions[i])
+            #if the impurity is less than the lowest impurity adjust the feature to be split on and the lowest impurity
+            if impurity < lowest_impurity:
+                lowest_impurity = impurity
+                best_feature = f
+                best_node = DTNode(separator_func)
+
+
+        #Splits the data into partitions based on the best feature
+        separator_func, partitions = partition_by_feature_value(examples, best_feature)
+        best_node = DTNode(separator_func)
+        #Creating the tree from best decision
+        for v_i in range(len(partitions)):
+
+            #sets partitions to example
+            example_i = partitions[v_i]
+            #if example_i empty print the most common class in examples
+            if len(example_i) == 0:
+                best_node.children.append(DTNode(most_common_class))
+                print("empty")
+            else:
+                    #recursively call the decision tree on the partitions
+                updated_features=list(features)
+                updated_features.remove(best_feature)
+
+                best_node.children.append(DTree(example_i,updated_features,criterion))
+    return best_node
+
 
 """
 Fn from prev questions
@@ -83,12 +138,17 @@ class DTNode:
 
 
     def predict(self, input_data):
-        if len(self.children) == 0:#leaf node (decision is not a function so just return it)
-            return self.decision #return the classifier/regression result if it is a leaf node
+        if len(self.children) == 0:#leaf node
+            return self.decision
         else:
-            childNum = self.decision(input_data) #calculates which child to go to based on decision function (is a function if its not a leaf node)
-            return self.children[childNum].predict(input_data) #recursively calls predict on the child node
+            childNum = self.decision(input_data)
+            return self.children[childNum].predict(input_data)
 
+    def leaves(self):
+        if len(self.children) == 0: #leaf node
+            return 1
+        else: #recursively call on children
+            return sum([child.leaves() for child in self.children])
 
 def most_common_class(examples):
     """
@@ -97,62 +157,13 @@ def most_common_class(examples):
     classification = [x[1] for x in examples]
     return max(classification, key=classification.count)
 
-def DTree(examples,features,criterion):
-    """
-    COnstructs the decision tree
-    """
-    # base case all examples in one class. dataset[i][-1] is the class label
-    if all(dataset[i][-1] == dataset[0][-1] for i in range(len(dataset))):
-        return dataset[0][-1]
-    # base case set of features is empty
-    elif len(features) == 0:
-        return most_common_class(examples)
-    else:
-
-        lowest_missclassification=9999 #initialize to a high number
-        best_node=DTNode()  #initialize best node to empty node
-        # find the best feature to split on
-        for f in features:
-            # for each feature partition the data
-            separator_func, partitions = partition_by_feature_value(examples, f)
-
-            #calculates the maximum misclassification error for the partitions
-            missclassification = max(misclassification(partitions[i]) for i in range(len(partitions)))
-            #TODO REDO SO ITS NOT JUST MISSCLASSIFICATION (needs to find the lowest)
-            #if the current feature has the lowest misclassification error, set the best node to the current feature
-            if(missclassification<lowest_missclassification or lowest_missclassification==0):
-                lowest_missclassification=missclassification
-                best_node=DTNode(separator_func)
-                best_feature=f
-
-            for v_i in range(len(partitions)):
-
-                #sets partitions to example
-                example_i = partitions[v_i]
-                #if example_i empty print the most common class in examples
-                if len(example_i) == 0:
-                    best_node.children.append(DTNode(most_common_class))
-
-                else:
-                    #recursively call the decision tree on the partitions
-                    best_node.children.append(DTree(partitions[v_i],features.remove(f),criterion))
-        return best_node
 
 
 
 
-        #find the best attribute to split on
 
-
-
-
-dataset = [
-  ((True, True), False),
-  ((True, False), True),
-  ((False, True), True),
-  ((False, False), False)
-]
-print(most_common_class(dataset))
-t = train_tree(dataset, misclassification)
-print(t.predict((True, False)))
-print(t.predict((False, False)))
+t = DTNode(True)
+f = DTNode(False)
+n = DTNode(lambda v: 0 if not v else 1)
+n.children = [t, f]
+print(n.leaves())
