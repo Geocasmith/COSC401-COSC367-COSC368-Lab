@@ -126,8 +126,16 @@ def DTree(examples,features,criterion):
                 best_feature=f
 
             for v_i in range(len(partitions)):
-                #recursively call the decision tree on the partitions
-                best_node.children.append(DTree(partitions[v_i],features[:],criterion))
+
+                #sets partitions to example
+                example_i = partitions[v_i]
+                #if example_i empty print the most common class in examples
+                if len(example_i) == 0:
+                    best_node.children.append(DTNode(most_common_class))
+
+                else:
+                    #recursively call the decision tree on the partitions
+                    best_node.children.append(DTree(partitions[v_i],features.remove(f),criterion))
         return best_node
 
 
