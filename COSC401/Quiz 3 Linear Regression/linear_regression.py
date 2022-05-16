@@ -5,6 +5,9 @@ def linear_regression(xs, ys):
     """
     Computes theta, an array of regression coefficients
     """
+    # Add a column of 1s to xs
+    xs = np.c_[np.ones(xs.shape[0]), xs]
+    # Calculate theta
     xT = np.transpose(xs)
     xTx = np.matmul(xT, xs)
     xTx_inv = np.linalg.inv(xTx)
